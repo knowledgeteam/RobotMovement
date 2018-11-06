@@ -1,0 +1,137 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>David Wilson - Robot Movement</title>
+	
+	<meta name="author" content="David Wilson">
+	<meta name="date" content="November 2018">
+	<meta name="project" content="Robot Movement: Code challenge for IOOF">
+
+	<!-- styles -->
+	<link rel="stylesheet" href="styles/style.css">
+	<link rel="stylesheet" href="libraries/bootstrap-4.0.0/bootstrap.min.css">
+
+	<!-- scripts -->
+	<script src="libraries/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+	<script src="libraries/bootstrap-4.0.0/bootstrap.min.js"></script>
+
+	<script src="scripts/main.js"></script>
+	<script src="scripts/robot.js"></script>
+	<script src="scripts/grid.js"></script>
+	<script src="scripts/log.js"></script>
+	<script src="scripts/tests.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="container-fluid">
+			<h1 class="title">David Wilson - Robot Movement</h1>
+			<h4>IOOF Code Challenge November 2018</h4>
+		</div>
+		<div class="row">
+			<!-- button inputs -->
+			<div id="leftMenu" class="col-2">
+				<div class="btn-group-vertical">
+					<input class="btn btn-primary" type="button" value="Commands" data-toggle="modal" data-target="#instructions"/>
+					<input class="btn btn-primary" type="button" value="Test" onclick="robot.test()"/>
+					<input id="wanderBtn" class="btn btn-primary" type="button" value="Wander" onclick="robot.wander()" />
+					<input id="resetBtn" class="btn btn-primary" type="button" value="Reset" onclick="robot.reset();log.clear()"/>
+				</div>
+			</div>
+			<div class="col-6">
+				<main>
+					<!-- main grid -->
+					<div id="grid"></div>
+					<!-- command input -->
+					<div class="input-group mb-3" style="padding-top: 20px;">
+						<div class="input-group-prepend">
+							<span class="input-group-text">Robot:</span>
+						</div>
+						<input id = "commandInput" type="text" class="form-control" placeholder="eg Place 0,0,North">
+					</div>
+				</main>
+			</div>
+			<div class="col-4">
+				<ul id="log" class="list-group"></ul>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Instructions modal -->
+	<div class="modal fade" id="instructions"role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Robot Commands</h5>
+				</div>
+				<div class="modal-body">
+					<table class="table">
+						<thead class="thead-light">
+							<tr>
+								<th scope="col">Command</th>
+								<th scope="col">Examples</th>
+								<th scope="col">Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>Place</th>
+								<td class="text-nowrap">Place 0,0,north</td>
+								<td>Place the robot on the grid at position 0,0 facing north.</td>
+							</tr>
+							<tr>
+								<th>Move</th>
+								<td class="text-nowrap">Move<br>Move 2<br>Move slide-left,3<br>Move backwards</td>
+								<td>Move the robot.<br>Optional extra parameters to tell the robot what type of move to make and how far to go.</td>
+							</tr>
+							<tr>
+								<th>Left</th>
+								<td class="text-nowrap">Left</td>
+								<td>Turn the robot left.</td>
+							</tr>
+							<tr>
+								<th>Right</th>
+								<td class="text-nowrap">Right</td>
+								<td>Display a report of the robots current position and orientation.</td>
+							</tr>
+							<tr>
+								<th>UTurn</th>
+								<td class="text-nowrap">UTurn</td>
+								<td>Turn the robot around to face the opposite direction.</td>
+							</tr>
+							<tr>
+								<th>Report</th>
+								<td class="text-nowrap">report</td>
+								<td>Display a report of the robots current position and orientation.</td>
+							</tr>
+							<tr>
+								<th>Wander</th>
+								<td class="text-nowrap">Wander</td>
+								<td>The robot will make random moves until wander is entered again.</td>
+							</tr>
+							<tr>
+								<th>Reset</th>
+								<td class="text-nowrap">Reset</td>
+								<td>Remove the robot from the grid.</td>
+							</tr>
+							<tr>
+								<th>Test</th>
+								<td class="text-nowrap">Test</td>
+								<td>Run the tests described in the tests.js file and report on the results.</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

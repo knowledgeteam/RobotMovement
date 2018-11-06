@@ -1,0 +1,30 @@
+/* ================================================================================
+// Author: David Wilson
+// Date: November: 2018
+// Project: IOOF Code Challenge
+// --------------------------------------------------------------------------------
+// style.css | Purpose:
+// Apply custom styles where appropriate.
+// ================================================================================*/
+
+
+#leftMenu {
+	text-align: center;
+}
+
+.cell {
+	border: 1px solid #ddd;
+	display: inline-block;
+	margin: 1px;
+	vertical-align: middle;
+}
+
+.coordinates {
+	position: absolute;
+	color:grey;
+}
+
+.commandFailed span{
+	color: red;
+	font-style: italic;
+}
