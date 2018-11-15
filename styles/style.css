@@ -16,6 +16,8 @@
 	border: 1px solid #ddd;
 	display: inline-block;
 	margin: 1px;
+	width:100px;
+	height:100px;
 	vertical-align: middle;
 }
 
@@ -24,7 +26,11 @@
 	color:grey;
 }
 
-.commandFailed span{
+.commandErrorMessage {
 	color: red;
 	font-style: italic;
+}
+
+.coordinates {
+    position: absolute;
 }
