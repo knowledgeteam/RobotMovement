@@ -8,6 +8,7 @@
 // the user. Results of the test are added to the log. Detailed results will be
 // displayed in a table on the console.
 // ================================================================================
+"use strict"
 var test = (function(){
 
 	const run = function(){
@@ -36,7 +37,7 @@ var test = (function(){
 			return !n.testSuccess;
 		});
 
-		log.addEntry(`<strong>${tests.length} tests run. ${failedTests.length} failed</strong><br>see console (F12) for details`);
+		command_history.addEntry(`<strong>${tests.length} tests run. ${failedTests.length} failed</strong><br>see console (F12) for details`);
 
 		//display results
 		console.table(tests);
@@ -60,201 +61,56 @@ var tests = [
 		"testSuccess" : null			// did the actual result match the expected result
 	},
 // Move function tests
-	{
-		"function" : "move",
-		"command" : "move",
-		"expectedSuccess" : false, // since robot has not been placed
-	},{
-		"function" : "place",
-		"command" : "place 2,2,north",
-		"expectedSuccess" : true,
-
-	},{
-		"function" : "move",
-		"command" : "move",
-		"expectedSuccess" : true,
-	},{
-		"function" : "move",
-		"command" : "move backwards",
-		"expectedSuccess" : true,
-	},{
-		"function" : "move",
-		"command" : "move backwards,2",
-		"expectedSuccess" : true,
-	},{
-		"function" : "move",
-		"command" : "move 6",
-		"expectedSuccess" : false,
-	},{
-		"function" : "move",
-		"command" : "move over",
-		"expectedSuccess" : true,
-	},{
-		"function" : "move",
-		"command" : "move 2,slide-left",
-		"expectedSuccess" : true,
-	},{
-		"function" : "move",
-		"command" : "move 2,2,2,2,2",
-		"expectedSuccess" : true,
-	},
+	{"function" : "move",	"command" : "move",				"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 2,2,north",	"expectedSuccess" : true},
+	{"function" : "move",	"command" : "move",				"expectedSuccess" : true},
+	{"function" : "move",	"command" : "move backwards",	"expectedSuccess" : false},
+	{"function" : "move",	"command" : "move backwards,2",	"expectedSuccess" : true},
+	{"function" : "move",	"command" : "move 6",			"expectedSuccess" : false},
+	{"function" : "move",	"command" : "move over",		"expectedSuccess" : false},
+	{"function" : "move",	"command" : "move 2,slide-left","expectedSuccess" : false},
+	{"function" : "move",	"command" : "move slide-left,2","expectedSuccess" : true},
+	{"function" : "move",	"command" : "move 2,2,2,2,2",	"expectedSuccess" : false},
 // Place function tests
-	{
-		"function" : "place",
-		"command" : "place 0,0,north",
-		"expectedSuccess" : true,
-	},{
-		"function" : "place",
-		"command" : "place 0,0,south",
-		"expectedSuccess" : true,	
-	},{
-		"function" : "place",
-		"command" : "place 0,0,east",
-		"expectedSuccess" : true,	
-	},{
-		"function" : "place",
-		"command" : "place 0,0,west",
-		"expectedSuccess" : true,	
-	},
+	{"function" : "place",	"command" : "place 0,0,north",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place 0,0,south",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place 0,0,east",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place 0,0,west",	"expectedSuccess" : true},
 // place edge cases
-	{
-		"function" : "place",
-		"command" : "place 0,0,north",
-		"expectedSuccess" : true,
-	},{
-		"function" : "place",
-		"command" : "place -1,0,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 0,-1,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place -1,-1,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 0,4,north",
-		"expectedSuccess" : true,
-	},{
-		"function" : "place",
-		"command" : "place -1,4,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 0,5,north",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place -1,5,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 4,0,north",
-		"expectedSuccess" : true,
-	},{
-		"function" : "place",
-		"command" : "place 5,0,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 4,-1,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 5,-1,north",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place 4,4,north",
-		"expectedSuccess" : true,
-	},{
-		"function" : "place",
-		"command" : "place 4,5,north",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place 5,4,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 5,5,north",
-		"expectedSuccess" : false,
-	},
+	{"function" : "place",	"command" : "place 0,0,north",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place -1,0,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0,-1,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place -1,-1,north","expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0,4,north",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place -1,4,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0,5,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place -1,5,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 4,0,north",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place 5,0,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 4,-1,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 5,-1,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 4,4,north",	"expectedSuccess" : true},
+	{"function" : "place",	"command" : "place 4,5,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 5,4,north",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 5,5,north",	"expectedSuccess" : false},
 // place parameter tests
-	{
-		"function" : "place",
-		"command" : "place",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place 0",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place there",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place 0,0",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place over,there",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place over there",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place 0,here",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place here,0",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place false",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place 0,0,thatWay",
-		"expectedSuccess" : false,
-	},{
-		"function" : "place",
-		"command" : "place one,0,north",
-		"expectedSuccess" : false,	
-	},{
-		"function" : "place",
-		"command" : "place one,0,north",
-		"expectedSuccess" : false,	
-	},
-// Turn function tests
-	{
-		"function" : "turn",
-		"command" : "left",
-		"expectedSuccess" : true,
-	},{
-		"function" : "turn",
-		"command" : "right",
-		"expectedSuccess" : true,	
-	},{
-		"function" : "turn",
-		"command" : "uturn",
-		"expectedSuccess" : true,	
-	},{
-		"function" : "turn",
-		"command" : "left 4",
-		"expectedSuccess" : true,
-	},
+	{"function" : "place",	"command" : "place",			"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0",			"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place there",		"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0,0",		"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place over,there",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place over there",	"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0,here",		"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place here,0",		"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place false",		"expectedSuccess" : false},
+	{"function" : "place",	"command" : "place 0,0,thatWay","expectedSuccess" : false},
+	{"function" : "place",	"command" : "place one,0,north","expectedSuccess" : false},
+// Turn function tests	
+	{"function" : "turn",	"command" : "left",				"expectedSuccess" : true},
+	{"function" : "turn",	"command" : "right",			"expectedSuccess" : true},
+	{"function" : "turn",	"command" : "uturn",			"expectedSuccess" : true},
+	{"function" : "turn",	"command" : "left 4",			"expectedSuccess" : true},
 // Report function tests
-	{
-		"function" : "report",
-		"command" : "report",
-		"expectedSuccess" : true,
-	}
-	
+	{"function" : "report",	"command" : "report",			"expectedSuccess" : true}
+
 ];

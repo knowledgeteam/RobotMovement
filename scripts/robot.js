@@ -12,139 +12,108 @@
 
 var robot = (function(){
 
-	var x_pos,y_pos;
-	var orientation = null;	// The robots current orientation is an index on the orientations array.
+	var x_position = null;
+	var y_position = null;
+	var orientation = null;				// index on the orientations array in app_settings
 	var isPlaced = false;
 
-	const place = function(x,y,direction){
+	const place = function(new_x_position,new_y_position,direction){
 
-		var newPosition = validate.coordinates(x,y);
-		var newDirection = validate.checkRobotLogic(direction,"orientations");
+		var newCoordinates = validate.coordinates(new_x_position,new_y_position);
+		var newDirection = validate.orientationType(direction,"orientations");
 
-		if (!newPosition.valid){return {"message":newPosition.message};}
-		if (!newDirection.found){return {"message":newDirection.message};}
+		if (!newCoordinates.valid){ return {"message":newCoordinates.message};}
+		if (!newDirection.found){ return {"message":newDirection.message};}
 
-		robot.x_pos = parseInt(x);
-		robot.y_pos = parseInt(y);
+		robot.x_position = parseInt(new_x_position);
+		robot.y_position = parseInt(new_y_position);
 		robot.orientation = newDirection.index;
 		robot.isPlaced = true;
 	};
 
+	const move = function(moveType,moveDistance){
 
-	const move = function(){
-
-		var new_x, new_y;
-		var newPosition;
-		var robotPlaced = validate.robotIsPlaced();
-		if (!robotPlaced.onGrid){ return {"message":robotPlaced.message};}
-
-		new_x = robot.x_pos + (robotLogic.orientations[robot.orientation].xAxisChange);
-		new_y = robot.y_pos + (robotLogic.orientations[robot.orientation].yAxisChange);
-
-		newPosition = validate.coordinates(new_x,new_y);
-
-		if (newPosition.valid){
-			robot.x_pos = new_x;
-			robot.y_pos = new_y;
-		} else {
-			return {"message":newPosition.message};
-		}
-	};
-
-	const left 	= function(){ return setRelativeOrientation("left");};
-	const right = function(){ return setRelativeOrientation("right");};
-	const uturn = function(){ return setRelativeOrientation("uturn");};
-
-	const report = function(){
-
-		if (robot.isPlaced){
-			log.addEntry(`Report: Position: (${robot.x_pos},${robot.y_pos}) facing ${robotLogic.orientations[robot.orientation].name}`);
-		} else {
-			log.addEntry("Report: Robot has not been placed on the grid");
-		}
-	};
-
-
-	const go = function(moveType,distance){
-
-		var new_x, new_y;
+		var new_x_position, new_y_position;
+		var newCoordinates;
 		var relativeMovementIndex;
 		var robotPlaced = validate.robotIsPlaced();
-		var moveTypeIndex = validate.checkRobotLogic(moveType,"movementRelativeToOrientation");
+		var moveTypeIndex = validate.orientationType(moveType,"movementRelativeToOrientation");
 
-		if (!robotPlaced.onGrid){	return {"message":robotPlaced.message};}
-		if (!moveTypeIndex.found){	return {"message":moveTypeIndex.message};}
+		if (!robotPlaced.onGrid){ return {"message":robotPlaced.message};}
+		if (!moveTypeIndex.found){ return {"message":moveTypeIndex.message};}
 
 		//relative movement is the direction of travel - not neccessarily the direction the robot is facing
-		relativeMovementIndex = robot.orientation + robotLogic.movementRelativeToOrientation[moveTypeIndex.index].movementOrientationAdjustment;
+		relativeMovementIndex = robot.orientation + app_settings.movementRelativeToOrientation[moveTypeIndex.index].movementOrientationAdjustment;
 		relativeMovementIndex = adjustToValidOrientation(relativeMovementIndex);
 
-		new_x = robot.x_pos + (robotLogic.orientations[relativeMovementIndex].xAxisChange*distance);
-		new_y = robot.y_pos + (robotLogic.orientations[relativeMovementIndex].yAxisChange*distance);
+		new_x_position = robot.x_position + (app_settings.orientations[relativeMovementIndex].xAxisChange*moveDistance);
+		new_y_position = robot.y_position + (app_settings.orientations[relativeMovementIndex].yAxisChange*moveDistance);
 
-		var newPosition = validate.coordinates(new_x,new_y);
+		newCoordinates = validate.coordinates(new_x_position,new_y_position);
 
-		if (newPosition.valid){
-			robot.x_pos = new_x;
-			robot.y_pos = new_y;
+		if (newCoordinates.valid){
+			robot.x_position = new_x_position;
+			robot.y_position = new_y_position;
 		} else {
-			return {"message":newPosition.message};
+			return {"message":newCoordinates.message};
 		}
 	};
 
-
-	const adjustToValidOrientation = function(orientationIndex){
-
-		while (orientationIndex <0){
-			orientationIndex = orientationIndex + robotLogic.orientations.length;
-		}
-		while (orientationIndex >= robotLogic.orientations.length){
-			orientationIndex = orientationIndex - robotLogic.orientations.length;
-		}
-		return orientationIndex;
-	};
-
-	const setRelativeOrientation = function(turnName){
+	const turn = function(turnName){
 
 		var robotPlaced = validate.robotIsPlaced();
 		if (!robotPlaced.onGrid){ return {"message":robotPlaced.message};}
 		
-		var relativeOrientation = validate.checkRobotLogic(turnName,"relativeOrientation");
+		var relativeOrientation = validate.orientationType(turnName,"relativeOrientation");
 
 		if (relativeOrientation.found){
-			
 			// change the orientation of the robot by the number indicated in the orientationChange field for that move
-			robot.orientation = robot.orientation + robotLogic.relativeOrientation[relativeOrientation.index].orientationChange;
+			robot.orientation = robot.orientation + app_settings.relativeOrientation[relativeOrientation.index].orientationChange;
 			robot.orientation = adjustToValidOrientation(robot.orientation);
-
-		} else {
-			return {"message":`Robot cannot turn ${turnName}.`};
 		}
 	};
 
+	const report = function(){
+
+		var robotPlaced = validate.robotIsPlaced();
+		if (!robotPlaced.onGrid){ return {"message":robotPlaced.message};}
+
+		command_history.addEntry(`Report: Position: (${robot.x_position},${robot.y_position}) facing ${app_settings.orientations[robot.orientation].name}`);
+	};
+
+	const adjustToValidOrientation = function(orientationIndex){
+
+		while (orientationIndex <0){
+			orientationIndex = orientationIndex + app_settings.orientations.length;
+		}
+		while (orientationIndex >= app_settings.orientations.length){
+			orientationIndex = orientationIndex - app_settings.orientations.length;
+		}
+		return orientationIndex;
+	};
+
 	const reset = function(){
-		// clear robot variables
-		robot.x_pos = null;
-		robot.y_pos = null;
+		robot.x_position = null;
+		robot.y_position = null;
 		robot.orientation = null;
 		robot.isPlaced = false;
 	};
 
-	const interpretCommand = function(input){
+	const interpretCommand = function(rawUserCommand){
 
-		var checkInput = validate.userInput(input);
-		var executeCommand;
+		var checkInput = validate.userInput(rawUserCommand);
+		var commandResult;
 		var message;
 		var success = true;
 
 		if (checkInput.isValid){
 			// Assume there are multiple parameters
-			executeCommand = robot[checkInput.command].apply(null,checkInput.parameters);
+			commandResult = robot[checkInput.command].apply(null,checkInput.parameters);
 
 			// if there was an error message then log it.
-			if (!jQuery.isEmptyObject(executeCommand)){
-				console.warn(`Execution error: ${executeCommand.message}`);
-				message = executeCommand.message;
+			if (!jQuery.isEmptyObject(commandResult)){
+				console.warn(`Execution error: ${commandResult.message}`);
+				message = commandResult.message;
 				success = false;
 			}
 
@@ -156,28 +125,23 @@ var robot = (function(){
 		}
 
 		//temp update the viewmodel here
-		vm.robot_x = robot.x_pos;
-		vm.robot_y = robot.y_pos;
+		gridViewModel.robot_x = robot.x_position;
+		gridViewModel.robot_y = robot.y_position;
 
 		if (robot.isPlaced){
-			vm.robot_imgRotateAngle = robotLogic.orientations[robot.orientation].imgRotateAngle;
+			gridViewModel.robot_imgRotateAngle = app_settings.orientations[robot.orientation].imgRotateAngle;
 		}
 
- 		log.addEntry(input,message);
+ 		command_history.addEntry(rawUserCommand,message);
  		return success;
 	};
 
-	// public functions/variables
 	return {
 		place:place,
 		move:move,
-		go:go,
-		left:left,
-		right:right,
-		uturn:uturn,
+		turn:turn,
 		report:report,
 		reset:reset,
-		interpretCommand:interpretCommand,
-		isPlaced:isPlaced
+		interpretCommand:interpretCommand
 	};
 }());

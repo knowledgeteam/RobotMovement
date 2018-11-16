@@ -6,6 +6,7 @@
 // main.js | Purpose:
 
 // ================================================================================
+"use strict"
 jQuery(document).ready(function(){
 
 	var commandSelector = jQuery("#commandInput");

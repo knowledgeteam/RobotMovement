@@ -13,24 +13,20 @@
 	<link rel="stylesheet" href="styles/style.css">
 	<link rel="stylesheet" href="libraries/bootstrap-4.0.0/bootstrap.min.css">
 
-	<!-- scripts -->
+	<!-- libraries -->
 	<script src="libraries/jquery-3.3.1/jquery-3.3.1.min.js"></script>
 	<script src="libraries/bootstrap-4.0.0/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
 
-
-
-	<script src="scripts/config.js"></script>
-	<script src="scripts/validate.js"></script>
-	<script src="scripts/main.js"></script>
-
-	<script src="scripts/menu.js"></script>
-	<script src="scripts/validate.js"></script>
-	<script src="scripts/robotLogic.js"></script>
-	<script src="scripts/robot.js"></script>
-	<script src="scripts/log.js"></script>
-	<script src="scripts/tests.js"></script>
-
+	<!-- scripts -->
+	<script src="scripts/app_settings.js"></script>
+	<script src="scripts/command_history.js"></script>
+	<script src="scripts/vueComponents.js"></script>
+	<script async src="scripts/validate.js"></script>
+	<script async src="scripts/robot.js"></script>
+	<script async src="scripts/tests.js"></script>
+	<script async src="scripts/docReady.js"></script>
+	<script defer src="scripts/viewModels.js"></script>
 </head>
 
 <body>
@@ -40,36 +36,34 @@
 			<h4>IOOF Code Challenge November 2018</h4>
 		</div>
 		<div class="row">
-			<!-- button inputs -->
-			<div id="leftMenu" class="col-2">
+			<div id="menu" class="col-2">
 				<div class="btn-group-vertical" >
+					<!-- <input class="btn btn-primary" type="button" v-bind:value=name v-bind:onclick=click /> -->
 					<menu-button v-bind:name="item.buttonName" v-bind:click="item.click" v-for="item in buttons"></menu-button>
 				</div>
 			</div>
-			<div class="col-6">
-				<main>
-					<div id="grid2">
-						<span v-for="y in rev_array" >
-							<grid-cell 
-								v-for="x in array"
-								v-bind:grid_x="x"
-								v-bind:grid_y="y"
-							></grid-cell>
-						</span>
-					</div>
+			<main class="col-6">
+				<div id="grid">
+					<span v-for="y in rowOrder" >
+						<grid-cell 
+							v-for="x in columnOrder"
+							v-bind:grid_x="x"
+							v-bind:grid_y="y"
+						></grid-cell>
+					</span>
+				</div>
 
-					<!-- command input -->
-					<div class="input-group mb-3" style="padding-top: 20px;">
-						<div class="input-group-prepend">
-							<span class="input-group-text">Robot:</span>
-						</div>
-						<input id = "commandInput" type="text" class="form-control" placeholder="eg Place 0,0,North">
+				<!-- command input -->
+				<div class="input-group mb-3" style="padding-top: 20px;">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Robot:</span>
 					</div>
-				</main>
-			</div>
-			<div id="vueLog"class="col-4">
+					<input id = "commandInput" type="text" class="form-control" placeholder="eg Place 0,0,North">
+				</div>
+			</main>
+			<div id="commandHistory"class="col-4">
 				<ul>
-					<li v-for="item in log">
+					<li v-for="item in command_history">
 						{{ item.command }}<span class="commandErrorMessage"> {{ item.message }} </span>
 					</li>
 				</ul>
@@ -77,91 +71,7 @@
 		</div>
 	</div>
 
-<script>
 
-function showCommands(){
-	$('#commandsModal').modal('show');
-}
-
-function testCommand(){
-	vm.$forceUpdate();
-}
-
-Vue.component('vrobot', {
-	computed: {
-		robotStyle () {
-			return { transform: `rotate( ${this.$root.robot_imgRotateAngle}deg)`,
-					 height	: "inherit"
-			}
-		}
-	},
-	template:`<img id="robot" 
-				src="images/robot.png" 
-				v-bind:style="robotStyle">`
-
-});
-
-Vue.component('menu-button', {
-	props: ['name','click'],
-	template: `<input class="btn btn-primary"
-					type="button"
-					v-bind:value=name
-					v-bind:onclick=click>`
-});
-
-var vm = new Vue({
-	el: '#grid2',
-	data: {
-		gridSize: config.gridSize,
-		robot_x: function(){return robot.x_pos;},
-		robot_y: function(){return robot.y_pos;},
-		robot_imgRotateAngle: function(){return robotLogic.orientations[robot.orientation].imgRotateAngle;},
-	},
-	computed: { //array/reverse array needed to place grid origin in southwest corner
-		array: function(){
-			var array = [];
-			for (var i = 0; i < this.gridSize; i++) { array.push(i);}
-			return array; // returns [0,1,2,3,4];
-		},
-		rev_array: function(){
-			var reverseArray = this.array.slice(0).reverse();
-			return reverseArray; // returns [4,3,2,1,0]
-		}
-	}
-});
-
-
-Vue.component('grid-cell', {
-	props: ['grid_x','grid_y'],
-	methods: {
-		hasRobot: function(){
-			return ((this.grid_x == vm.robot_x)&&(this.grid_y == vm.robot_y));
-		}
-	},
-	template: `	<span class="cell" v-bind:class="['col_'+grid_x,'row_'+grid_y]">
-					<span class="coordinates">({{ grid_x }},{{ grid_y }})</span>
-					<vrobot v-if="hasRobot()"></vrobot>
-				</span>`
-});
-
-
-
-var vmenu = new Vue({
-	el: '#leftMenu',
-	data: {
-	  buttons: menuButtons
-	}
-});
-
-
-var vlog = new Vue({
-	el: '#vueLog',
-	data: {
-		log: log.logArray
-	}
-});
-
-</script>
 
 	<!-- Instructions modal -->
 	<div class="modal fade" id="commandsModal" role="dialog">
@@ -184,48 +94,31 @@ var vlog = new Vue({
 								<th>Place</th>
 								<td class="text-nowrap">Place 0,0,north</td>
 								<td>Place the robot on the grid at position 0,0 facing north.</td>
-							</tr>
-							<tr>
+							</tr><tr>
 								<th>Move</th>
-								<td class="text-nowrap">Move</td>
-								<td>Move the robot one space forwards</td>
-							</tr>
-							<tr>
-								<th>Go</th>
-								<td class="text-nowrap">Go forwards,4<br>Go backwards,3<br>Go slide-left,1</td>
-								<td>Move the robot. Extra parameters tell the robot what type of move to make and how far to go.</td>
-							</tr>
-							<tr>
+								<td class="text-nowrap">Move<br>Move forwards,4<br>Move backwards,3<br>Move slide-left,1</td>
+								<td>Move the Robot. Defaults to one space forwards.</td>
+							</tr><tr>
 								<th>Left</th>
 								<td class="text-nowrap">Left</td>
 								<td>Turn the robot left.</td>
-							</tr>
-							<tr>
+							</tr><tr>
 								<th>Right</th>
 								<td class="text-nowrap">Right</td>
 								<td>Display a report of the robots current position and orientation.</td>
-							</tr>
-							<tr>
+							</tr><tr>
 								<th>UTurn</th>
 								<td class="text-nowrap">UTurn</td>
 								<td>Turn the robot around to face the opposite direction.</td>
-							</tr>
-							<tr>
+							</tr><tr>
 								<th>Report</th>
 								<td class="text-nowrap">report</td>
 								<td>Display a report of the robots current position and orientation.</td>
-							</tr>
-							<tr>
-								<th>Wander</th>
-								<td class="text-nowrap">Wander</td>
-								<td>The robot will make random moves until wander is entered again.</td>
-							</tr>
-							<tr>
+							</tr><tr>
 								<th>Reset</th>
 								<td class="text-nowrap">Reset</td>
 								<td>Remove the robot from the grid.</td>
-							</tr>
-							<tr>
+							</tr><tr>
 								<th>Test</th>
 								<td class="text-nowrap">Test</td>
 								<td>Run the tests described in the tests.js file and report on the results.</td>
@@ -239,6 +132,5 @@ var vlog = new Vue({
 			</div>
 		</div>
 	</div>
-
 </body>
 </html>
