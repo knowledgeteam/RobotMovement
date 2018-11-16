@@ -12,10 +12,11 @@ All dependancies are included and the system can be run locally. Open index.html
 
 ## Approach
 
-The code is designed to be as extensible as possible.
-
+The code is designed to be as extensible as possible
+.
 ## Using the System
 The robot can be sent commands via the text input below the grid.
+
 | Command | Examples       | Description                                                                                |
 | --------|----------------|--------------------------------------------------------------------------------------------|
 |Place    |Place 0,0,north |Place the robot on the grid at position 0,0 facing north.                                   |
@@ -47,7 +48,8 @@ Explain what these tests test and why
 ```
 Give an example
 ```
-
+## Known Bugs
+making a turn command with a single parameter will not cause an error message -due to it being redirected to the setRelativeOrientation function which requires a single parameter. reproduce by placing robot and commanding 'left 2'
 
 ## Built With
 * [vue](https://vuejs.org/) - The web framework used

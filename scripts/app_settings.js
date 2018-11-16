@@ -1,15 +1,20 @@
-// ================================================================================
-// Author: David Wilson
-// Date: November: 2018
-// Project: IOOF Code Challenge
-// --------------------------------------------------------------------------------
-// robotCommands.js | Purpose:
-// Define the robot and all functions related to its orientation and movement.
-// The public functions defined here will be called from either the command input
-// on the GUI or from the console.
-// ================================================================================
+"use strict"
+var app_settings = (function(){
 
-var robotLogic = (function(){
+	var gridSize = 5;		// grid dimension
+	var logLength = 20;		// Number of entries to display in the command history
+
+	var menuButtons = [{
+			"buttonName":"Commands",
+			"click":"$('#commandsModal').modal('show')"
+		},{
+			"buttonName":"Test",
+			"click":"test.run()"
+		},{
+			"buttonName":"Reset",
+			"click":"robot.reset();"
+		}];
+
 
 	const orientations = [
 		{name:"north", xAxisChange: 0,yAxisChange: 1,imgRotateAngle:0},
@@ -38,10 +43,13 @@ var robotLogic = (function(){
 		{name:"slide-left",movementOrientationAdjustment:-1}
 	];
 
-	// public functions/variables
 	return {
+		gridSize:gridSize,
+		logLength:logLength,
+		menuButtons:menuButtons,
 		orientations:orientations,
 		relativeOrientation:relativeOrientation,
 		movementRelativeToOrientation:movementRelativeToOrientation
+
 	};
 }());

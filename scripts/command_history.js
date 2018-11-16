@@ -9,8 +9,8 @@
 // The public functions defined here will be initialised from main.js then called
 // from robot.js
 // ================================================================================
-
-var log = (function(){
+"use strict"
+var command_history = (function(){
 
 	var logArray = [];
 	
@@ -24,23 +24,13 @@ var log = (function(){
 		logArray.push(entry);
 
 		// only keep most recent commands
-		if (logArray.length>=config.logLength){
+		if (logArray.length>=app_settings.logLength){
 			logArray.shift();
 		}
-	}; // End Function: log.addEntry
-
-
-	const clear = function(){
-
-		// empty the log then redraw it
-		logArray = [];
 	};
-
 	// public functions/variables
 	return {
 		addEntry:addEntry,
-		clear:clear,
-		// init:init,
 		logArray:logArray
 	};
 })();

@@ -8,10 +8,10 @@
 // The public functions defined here will be called from either the command input
 // on the GUI or from the console.
 // ================================================================================
-
+"use strict"
 var validate = (function(){
 
-	const checkRobotLogic = function(input,arrayName){
+	const orientationType = function(input,orientationType){
 
 		var result = {
 			found: false,
@@ -19,7 +19,7 @@ var validate = (function(){
 			message: `Robot cannot understand the meaning of ${input}.`
 		};
 
-		var matchedIndex = robotLogic[arrayName].findIndex(arrayName => arrayName.name==input);
+		var matchedIndex = app_settings[orientationType].findIndex(orientationType => orientationType.name==input);
 
 		if (matchedIndex != -1){
 			result.found = true;
@@ -42,7 +42,7 @@ var validate = (function(){
 		return result;
 	}
 
-	const coordinates = function(x,y){
+	const coordinates = function(x_position,y_position){
 		
 		var result = {
 			valid: true,
@@ -50,21 +50,20 @@ var validate = (function(){
 		};
 
 		// Check if the coordinates are outside the grid
-		if (singleCoordinate(x) && singleCoordinate(y)){ return result;}
+		if (singleCoordinate(x_position) && singleCoordinate(y_position)){ return result;}
 
 		result.valid = false;
-		result.message = `Position (${x},${y}) is not on the grid.`;
+		result.message = `Position (${x_position},${y_position}) is not on the grid.`;
 
 		return result;
 	};
 
 	const singleCoordinate = function(n){
 
-		if (n>=config.gridSize){ return false;}
+		if (n>=app_settings.gridSize){ return false;}
 		if (n<0){ return false;}
 		return true;
 	}
-
 
 	const userInput = function(input){
 
@@ -100,6 +99,29 @@ var validate = (function(){
 			parameterArray = inputParameters.split(',');
 		}
 
+		// check if the user is calling a function which should be redirected
+		// e.g. call to 'left' should actually call 'turn' 
+		switch (inputCommand) {
+			case "left":
+				inputCommand = "turn";
+				if (parameterArray.length == 0){parameterArray = ["left"];}
+				break;
+
+			case "right":
+				inputCommand = "turn";
+				if (parameterArray.length == 0){parameterArray = ["right"];}
+				break;
+
+			case "uturn":
+				inputCommand = "turn";
+				if (parameterArray.length == 0){parameterArray = ["uturn"];}
+				break;
+
+			case "move": 	// allow move with no parameters - default to move forwards 1 space
+				if (parameterArray.length == 0){parameterArray = ["forwards",1];}
+				break;
+		}
+		
 		//check if command exists
 		if (typeof robot[inputCommand] !== "function"){
 
@@ -114,6 +136,13 @@ var validate = (function(){
 			return result;
 		}
 
+		// check all parameters to see is they are either ints or orientations
+
+
+
+
+
+
 		// valid function call. Parameters will be validated from within that function
 		result.isValid = true;
 		result.command = inputCommand;
@@ -127,7 +156,7 @@ var validate = (function(){
 	return {
 		userInput:userInput,
 		coordinates:coordinates,
-		checkRobotLogic:checkRobotLogic,
+		orientationType:orientationType,
 		robotIsPlaced:robotIsPlaced
 	};
 }());
