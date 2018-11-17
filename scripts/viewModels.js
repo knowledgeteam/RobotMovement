@@ -3,9 +3,7 @@ var gridViewModel = new Vue({
 	el: '#grid',
 	data: {
 		gridSize: app_settings.gridSize,
-		robot_x: null,
-		robot_y: null,
-		robot_imgRotateAngle: null
+		robotPosition : robot.currentPosition
 	},
 	computed: { // define order so that origin will be in southwest corner
 		columnOrder: function(){
@@ -32,6 +30,6 @@ var menuViewModel = new Vue({
 var commandHistoryViewModel = new Vue({
 	el: '#commandHistory',
 	data: {
-		command_history: command_history.logArray
+		command_history : robot.commandLog
 	}
 });

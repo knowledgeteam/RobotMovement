@@ -19,13 +19,13 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
 
 	<!-- scripts -->
-	<script src="scripts/app_settings.js"></script>
-	<script src="scripts/command_history.js"></script>
-	<script src="scripts/vueComponents.js"></script>
+	<script async src="scripts/command_listener.js"></script>
 	<script async src="scripts/validate.js"></script>
-	<script async src="scripts/robot.js"></script>
-	<script async src="scripts/tests.js"></script>
-	<script async src="scripts/docReady.js"></script>
+	<script async src="scripts/robot_command_test.js"></script>
+	<script async src="scripts/robot_abilities.js"></script>
+	<script src="scripts/app_settings.js"></script>
+	<script src="scripts/vueComponents.js"></script>
+	<script src="scripts/robot.js"></script>
 	<script defer src="scripts/viewModels.js"></script>
 </head>
 
@@ -37,8 +37,7 @@
 		</div>
 		<div class="row">
 			<div id="menu" class="col-2">
-				<div class="btn-group-vertical" >
-					<!-- <input class="btn btn-primary" type="button" v-bind:value=name v-bind:onclick=click /> -->
+				<div class="btn-group-vertical">
 					<menu-button v-bind:name="item.buttonName" v-bind:click="item.click" v-for="item in buttons"></menu-button>
 				</div>
 			</div>
@@ -52,7 +51,6 @@
 						></grid-cell>
 					</span>
 				</div>
-
 				<!-- command input -->
 				<div class="input-group mb-3" style="padding-top: 20px;">
 					<div class="input-group-prepend">
@@ -62,17 +60,14 @@
 				</div>
 			</main>
 			<div id="commandHistory"class="col-4">
-				<ul>
-					<li v-for="item in command_history">
+				<ul class="list-group">
+					<li v-for="item in command_history" class="list-group-item">
 						{{ item.command }}<span class="commandErrorMessage"> {{ item.message }} </span>
 					</li>
 				</ul>
 			</div>
 		</div>
 	</div>
-
-
-
 	<!-- Instructions modal -->
 	<div class="modal fade" id="commandsModal" role="dialog">
 		<div class="modal-dialog modal-lg" role="document">

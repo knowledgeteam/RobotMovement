@@ -3,10 +3,8 @@
 // Date: November: 2018
 // Project: IOOF Code Challenge
 // --------------------------------------------------------------------------------
-// robot.js | Purpose:
-// Define the robot and all functions related to its orientation and movement.
-// The public functions defined here will be called from either the command input
-// on the GUI or from the console.
+// validate.js | Purpose:
+// Functions to validate user commands and parameters 
 // ================================================================================
 "use strict"
 var validate = (function(){
@@ -24,6 +22,7 @@ var validate = (function(){
 		if (matchedIndex != -1){
 			result.found = true;
 			result.index = matchedIndex;
+			result.message = null;
 		}
 		return result;
 	};
@@ -35,7 +34,7 @@ var validate = (function(){
 			message: "Robot has not been placed on the grid."
 		};
 
-		if (robot.isPlaced) {
+		if (robot.currentPosition.isPlaced) {
 			result.onGrid = true,
 			result.message = null
 		}
@@ -59,6 +58,8 @@ var validate = (function(){
 	};
 
 	const singleCoordinate = function(n){
+
+		if (isNaN(parseInt(n))){return false;}
 
 		if (n>=app_settings.gridSize){ return false;}
 		if (n<0){ return false;}
@@ -123,24 +124,20 @@ var validate = (function(){
 		}
 		
 		//check if command exists
-		if (typeof robot[inputCommand] !== "function"){
+		if (typeof robot_abilities[inputCommand] !== "function"){
 
 			result.message = `Robot does not know the ${inputCommand} command.`;
 			return result;
 		}
 
 		// check if the correct number of parameters are supplied
-		if (robot[inputCommand].length !== parameterArray.length){
+		// if (robot_abilities[inputCommand].length !== parameterArray.length){
 
-			result.message = `Robot expected ${robot[inputCommand].length} parameters for the ${inputCommand} command.`;
-			return result;
-		}
+		// 	result.message = `Robot expected ${robot_abilities[inputCommand].length} parameters for the ${inputCommand} command.`;
+		// 	return result;
+		// }
 
 		// check all parameters to see is they are either ints or orientations
-
-
-
-
 
 
 		// valid function call. Parameters will be validated from within that function

@@ -1,20 +1,19 @@
 "use strict"
 var app_settings = (function(){
 
-	var gridSize = 5;		// grid dimension
-	var logLength = 20;		// Number of entries to display in the command history
+	const gridSize = 5;		// number of cells in each row/col of the grid
+	const logLength = 10;	// Number of entries to display in the command history
 
-	var menuButtons = [{
+	const menuButtons = [{
 			"buttonName":"Commands",
-			"click":"$('#commandsModal').modal('show')"
+			"click":"$('#commandsModal').modal('show');"
 		},{
 			"buttonName":"Test",
-			"click":"test.run()"
+			"click":"test.run();"
 		},{
 			"buttonName":"Reset",
-			"click":"robot.reset();"
+			"click":`robot.invokeCommand("reset");`
 		}];
-
 
 	const orientations = [
 		{name:"north", xAxisChange: 0,yAxisChange: 1,imgRotateAngle:0},
@@ -50,6 +49,5 @@ var app_settings = (function(){
 		orientations:orientations,
 		relativeOrientation:relativeOrientation,
 		movementRelativeToOrientation:movementRelativeToOrientation
-
 	};
 }());

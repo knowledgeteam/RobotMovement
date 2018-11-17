@@ -8,26 +8,29 @@ valid movement commands must still be allowed.
 
 ## Getting Started
 
-All dependancies are included and the system can be run locally. Open index.html to begin.
+All dependencies are included and the system can be run locally. Open index.html to begin.
 
 ## Approach
 
 The code is designed to be as extensible as possible
+insert specific examples...
+
+
 .
 ## Using the System
 The robot can be sent commands via the text input below the grid.
 
-| Command | Examples       | Description                                                                                |
-| --------|----------------|--------------------------------------------------------------------------------------------|
-|Place    |Place 0,0,north |Place the robot on the grid at position 0,0 facing north.                                   |
-|Move     |Move            |Move the robot one space forwards                                                           |
-|Go       |Go forwards,4   |Move the robot. Extra parameters tell the robot what type of move to make and how far to go.|
-|         |Go backwards,3  |                                                                                            |
-|         |Go slide-left,1 |                                                                                            |
-|Left     |Left            |Turn the robot left.                                                                        |
-|Right    |Right           |Display a report of the robots current position and orientation.                            |
-|UTurn    |UTurn           |Turn the robot around to face the opposite direction.                                       |
-|Report   |report          |Display a report of the robots current position and orientation.                            |
+| Command | Examples        | Description                                                    |
+| --------|-----------------|----------------------------------------------------------------|
+|Place    |Place 0,0,north  |Place the robot on the grid at position 0,0 facing north.       |
+|Move     |Move             |Move the Robot. Defaults to one space forwards.                 |
+|         |Move forwards,4  |                                                                |
+|         |Move backwards,3 |                                                                |
+|         |Move slide-left,1|                                                                |
+|Left     |Left             |Turn the robot left.                                            |
+|Right    |Right            |Display a report of the robots current position and orientation.|
+|UTurn    |UTurn            |Turn the robot around to face the opposite direction.           |
+|Report   |report           |Display a report of the robots current position and orientation.|
 
 ## Testing the System
 
@@ -49,7 +52,10 @@ Explain what these tests test and why
 Give an example
 ```
 ## Known Bugs
-making a turn command with a single parameter will not cause an error message -due to it being redirected to the setRelativeOrientation function which requires a single parameter. reproduce by placing robot and commanding 'left 2'
+* making a turn command with a single parameter will not cause an error message -due to it being redirected to the setRelativeOrientation function which requires a single parameter. reproduce by placing robot and commanding 'left 2'
+
+* Resizing the window can cause the rows to wrap.
+
 
 ## Built With
 * [vue](https://vuejs.org/) - The web framework used

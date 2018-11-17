@@ -1,4 +1,0 @@
-Known Issues
-
-Row wrapping on window size change
-	- Resizing the window without refreshing the page can cause the rows in the group to wrap.

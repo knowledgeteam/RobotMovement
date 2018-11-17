@@ -3,8 +3,8 @@
 // Date: November: 2018
 // Project: IOOF Code Challenge
 // --------------------------------------------------------------------------------
-// main.js | Purpose:
-
+// command_listener.js | Purpose:
+// Send entered user commands to be interpreted.
 // ================================================================================
 "use strict"
 jQuery(document).ready(function(){
@@ -14,10 +14,11 @@ jQuery(document).ready(function(){
 	// Set focus on the command input
 	commandSelector.focus();
 
-	// listen for commands (fire on 'enter' keyup)
+	// listen for commands (invoke on 'enter' keyup)
 	commandSelector.on('keyup', function (e) {
 		if (e.keyCode == 13) {
-			robot.interpretCommand(commandSelector.val());
+			robot.invokeCommand(commandSelector.val())
+
 			commandSelector.val("");
 		}
 	});
