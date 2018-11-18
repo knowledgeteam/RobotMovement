@@ -9,7 +9,10 @@ All dependencies are included and the system can be run locally. Open index.html
 ## Approach
 
 The app is designed around the command design pattern. It was built with extensibility in mind.
-For example new Robot Commands can be crfeated easily without modifying the existing code.
+For example new Robot Commands can be created easily without modifying the existing code.
+
+A number of additional features were developed to demonstrate this such as additional commands (UTurn),
+additional directions (moving diagonally can be enabled in app_settings), the testing mechanism and the visual interface.
 
 ## Using the System
 The robot can be sent commands via the text input below the grid.
