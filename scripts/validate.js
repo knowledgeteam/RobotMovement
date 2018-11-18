@@ -9,131 +9,162 @@
 "use strict"
 var validate = (function(){
 
-	const orientationType = function(input,orientationType){
+	// check for given orientationName (eg left) in any of the orientation arrays defined in app_settings
+	const orientationType = function(orientationName,orientationTypeName){
 
-		var result = {
-			found: false,
-			index: null,
-			message: `Robot cannot understand the meaning of ${input}.`
-		};
+		var validationResult;
+		var matchedIndex = app_settings[orientationTypeName].findIndex(orientationTypeName => orientationTypeName.name==orientationName);
 
-		var matchedIndex = app_settings[orientationType].findIndex(orientationType => orientationType.name==input);
-
-		if (matchedIndex != -1){
-			result.found = true;
-			result.index = matchedIndex;
-			result.message = null;
+		if (matchedIndex !=-1){
+			validationResult = {
+				valid: true,
+				index: matchedIndex,
+				message: null
+			};
+		} else {
+			validationResult = {
+				valid: false,
+				index: null,
+				message: `Robot cannot understand the meaning of ${orientationName}.`
+			}
 		}
-		return result;
+		return validationResult;
 	};
 	
 	const robotIsPlaced = function(){
 
-		var result = {
-			onGrid: false,
-			message: "Robot has not been placed on the grid."
-		};
+		var validationResult;
 
 		if (robot.currentPosition.isPlaced) {
-			result.onGrid = true,
-			result.message = null
+			validationResult = {
+				valid: true,
+				message: null
+			}
+		} else {
+			validationResult = {
+				valid: false,
+				message: "Robot has not been placed on the grid."
+			};
 		}
-		return result;
+		return validationResult;
 	}
 
 	const coordinates = function(x_position,y_position){
-		
-		var result = {
-			valid: true,
-			message: null
-		};
+	
+		var validationResult;
 
-		// Check if the coordinates are outside the grid
-		if (singleCoordinate(x_position) && singleCoordinate(y_position)){ return result;}
-
-		result.valid = false;
-		result.message = `Position (${x_position},${y_position}) is not on the grid.`;
-
-		return result;
+		if (singleCoordinate(x_position).valid && singleCoordinate(y_position).valid){
+			validationResult = {
+				valid: true,
+				message: null
+			};
+		} else {
+			validationResult = {
+				valid: false,
+				message: `Position (${x_position},${y_position}) is not on the grid.`
+			};
+		}
+		return validationResult;
 	};
 
 	const singleCoordinate = function(n){
 
-		if (isNaN(parseInt(n))){return false;}
+		var validationResult;
 
-		if (n>=app_settings.gridSize){ return false;}
-		if (n<0){ return false;}
-		return true;
+		if (isNaN(parseInt(n)) || n>=app_settings.gridSize || n<0) {
+			validationResult = { valid: false};
+		} else {
+			validationResult = { valid: true };
+		}
+		return validationResult;
 	}
 
-	const userInput = function(input){
+	// const userInput = function(input){
+	const userInput = function(rawUserString){
 
-		var inputCommand;
-		var inputParameters = "";
-		var inputArray = [];
-		var parameterArray = [];
-		var cleanInput;
+		var validationResult;
+		var parsedString;
+		var parsedCommandArray;
+		var parsedCommand;
+		var parsedParameters;
 
-		var result =  {
-			"isValid":false,
-			"command": null,
-			"parameters":null,
-			"message":`Robot does not know how to ${input}.`
-		};
+		// var inputCommand;
+		// var inputParameters = "";
+		// var inputArray = [];
+		// var parameterArray = [];
 
-		cleanInput = input.toLowerCase();
-		cleanInput = cleanInput.trim();
+		// var result =  {
+		// 	valid : false,
+		// 	command : null,
+		// 	parameters : null,
+		// 	message : `Robot does not know how to ${rawUserString}.`
+		// };
 
-		// check if the input has parameters
-		if (cleanInput.indexOf(" ")==-1){
-			// No parameters
-			inputCommand = cleanInput;
+		parsedString = rawUserString.toLowerCase();
+		parsedString = parsedString.trim();
+
+		parsedCommandArray = parsedString.split(" ");
+		parsedCommand = parsedCommandArray[0];
+
+		parsedParameters = parsedCommandArray.slice(1).join("").split(',');
 
 
-		} else {
-			// Input has one or more parameters 
+		// // check if the input has parameters
+		// if (parsedCommand.indexOf(" ")==-1){
+		// 	// No parameters
+		// 	inputCommand = parsedCommand;
+		// 	// parameterArray = null;
 
-			inputArray = cleanInput.split(" ");
+		// } else {
+		// 	// Input has one or more parameters 
 
-			inputCommand = inputArray[0];
-			inputParameters = inputArray.slice(1).join("");
-			parameterArray = inputParameters.split(',');
-		}
+		// 	inputArray = parsedCommand.split(" ");
+
+		// 	inputCommand = inputArray[0];
+		// 	inputParameters = inputArray.slice(1).join("");
+		// 	parameterArray = inputParameters.split(',');
+		// }
+
 
 		// check if the user is calling a function which should be redirected
 		// e.g. call to 'left' should actually call 'turn' 
-		switch (inputCommand) {
+		switch (parsedCommand) {
 			case "left":
-				inputCommand = "turn";
-				if (parameterArray.length == 0){parameterArray = ["left"];}
+				parsedCommand = "turn";
+				if (parsedParameters[0] == ""){parsedParameters = ["left"];}
 				break;
 
 			case "right":
-				inputCommand = "turn";
-				if (parameterArray.length == 0){parameterArray = ["right"];}
+				parsedCommand = "turn";
+				if (parsedParameters[0] == ""){parsedParameters = ["right"];}
 				break;
 
 			case "uturn":
-				inputCommand = "turn";
-				if (parameterArray.length == 0){parameterArray = ["uturn"];}
+				parsedCommand = "turn";
+				if (parsedParameters[0] == ""){parsedParameters = ["uturn"];}
 				break;
 
 			case "move": 	// allow move with no parameters - default to move forwards 1 space
-				if (parameterArray.length == 0){parameterArray = ["forwards",1];}
+				if (parsedParameters[0] == ""){parsedParameters = ["forwards",1];}
 				break;
 		}
-		
-		//check if command exists
-		if (typeof robot_abilities[inputCommand] !== "function"){
 
-			result.message = `Robot does not know the ${inputCommand} command.`;
-			return result;
+		//check if command exists
+		if (typeof robotCommands[parsedCommand] !== "function"){
+
+			validationResult = {
+				valid: false,
+				command: null,
+				parameters: null,
+				message: `Robot does not know the ${parsedCommand} command.`
+			};
+			return validationResult;
 		}
 
 		// check if the correct number of parameters are supplied
-		// if (robot_abilities[inputCommand].length !== parameterArray.length){
+		// if (robotCommands[inputCommand].length !== parsedParameters.length){
 
-		// 	result.message = `Robot expected ${robot_abilities[inputCommand].length} parameters for the ${inputCommand} command.`;
+		// 	result.message = `Robot expected ${robotCommands[inputCommand].length} parameters for the ${inputCommand} command.`;
 		// 	return result;
 		// }
 
@@ -141,12 +172,14 @@ var validate = (function(){
 
 
 		// valid function call. Parameters will be validated from within that function
-		result.isValid = true;
-		result.command = inputCommand;
-		result.parameters = parameterArray;
-		result.message = null;
-
-		return result;
+		validationResult = {
+				valid: true,
+				command: parsedCommand,
+				parameters: parsedParameters,
+				message: null
+			};
+		
+		return validationResult;
 	}
 
 	// public functions/variables

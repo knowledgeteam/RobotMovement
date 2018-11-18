@@ -22,7 +22,7 @@ var robot = (function(){
 
 	var commandLog = [];
 
-	const execute = function(command){
+	const executeCommand = function(command){
 		robot.currentPosition = command.execute(currentPosition, command.parameters);
 	};
 
@@ -40,37 +40,28 @@ var robot = (function(){
 
 	const invokeCommand = function(rawUserCommand){
 
-		var checkInput = validate.userInput(rawUserCommand);
-		var commandResult;
-		var errorMessage;
 		var success = true;
+		var errorMessage;
+		var commandResult;
+		var parsedUserCommand = validate.userInput(rawUserCommand);
 
 		addCommandLog(rawUserCommand,null);
 
-		if (checkInput.isValid){
+		if (parsedUserCommand.valid){
 			// Assume there are multiple parameters
-			execute(robot_abilities[checkInput.command].apply(null,checkInput.parameters));
-
-			// if there was an error message then log it.
-			if (!jQuery.isEmptyObject(commandResult)){
-				console.warn(`Execution error: ${commandResult.message}`);
-				errorMessage = commandResult.message;
-				success = false;
-			}
+			executeCommand(robotCommands[parsedUserCommand.command].apply(null,parsedUserCommand.parameters));
 
 		} else {
 			// command validation failed
-			console.warn(`Validation error: ${checkInput.message}`);
-			errorMessage = checkInput.message;
+			console.warn(`Validation error: ${parsedUserCommand.message}`);
+			robot.addCommandLogError(parsedUserCommand.message);
 			success = false;
 		}
 
  		return success;
-
 	};
 	return {
 		invokeCommand:invokeCommand,
-		execute:execute,
 		currentPosition:currentPosition,
 		commandLog:commandLog,
 		addCommandLog:addCommandLog,

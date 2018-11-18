@@ -10,7 +10,7 @@
 // ================================================================================
 "use strict"
 
-var robot_abilities = (function(){
+var robotCommands = (function(){
 
 	const command = function(execute,parameters){
 		this.execute = execute;
@@ -18,33 +18,32 @@ var robot_abilities = (function(){
 	};
 
 	const place = function(new_x_position,new_y_position,direction){
-		var placeParameters = {	"new_x_position" : new_x_position,
-								"new_y_position" : new_y_position,
-								"direction" : direction};
+		var placeParameters = {
+			"new_x_position" : new_x_position,
+			"new_y_position" : new_y_position,
+			"direction" : direction};
 		return new command(placeFunction,placeParameters);
 	};
 
 	const move = function(moveType,moveDistance){
-		var moveParameters = {	"moveType" : moveType,
-								"moveDistance" : moveDistance};
+		var moveParameters = {
+			"moveType" : moveType,
+			"moveDistance" : moveDistance};
 		return new command(moveFunction,moveParameters);
 	};
 
 	const turn = function(turnName){
-		var turnParameters = {	"turnName" : turnName};
+		var turnParameters = {"turnName" : turnName};
 		return new command(turnFunction,turnParameters);
 	};
 
 	const report = function(){
-		return new command(reportFunction);
+		return new command(reportFunction,{});
 	};
 
 	const reset = function(){
-		return new command(resetFunction);
+		return new command(resetFunction,{});
 	};
-
-
-
 
 	const placeFunction = function(currentPosition,moveParameters){
 
@@ -55,7 +54,7 @@ var robot_abilities = (function(){
 			robot.addCommandLogError(newCoordinates.message);
 			return currentPosition;
 		}
-		if (!newDirection.found){
+		if (!newDirection.valid){
 			robot.addCommandLogError(newDirection.message);
 			return currentPosition;
 		}
@@ -76,11 +75,11 @@ var robot_abilities = (function(){
 		var robotPlaced = validate.robotIsPlaced();
 		var moveTypeIndex = validate.orientationType(moveParameters.moveType,"movementRelativeToOrientation");
 
-		if (!robotPlaced.onGrid){
+		if (!robotPlaced.valid){
 			robot.addCommandLogError(robotPlaced.message);
 			return currentPosition;
 		}
-		if (!moveTypeIndex.found){
+		if (!moveTypeIndex.valid){
 			robot.addCommandLogError(moveTypeIndex.message);
 			return currentPosition;
 		}
@@ -109,14 +108,14 @@ var robot_abilities = (function(){
 	const turnFunction = function(currentPosition,turnParameters){
 
 		var robotPlaced = validate.robotIsPlaced();
-		if (!robotPlaced.onGrid){
+		if (!robotPlaced.valid){
 			robot.addCommandLogError(robotPlaced.message);
 			return currentPosition;
 		}
 
 		var relativeOrientation = validate.orientationType(turnParameters.turnName,"relativeOrientation");
 
-		if (relativeOrientation.found){
+		if (relativeOrientation.valid){
 			// change the orientation of the robot by the number indicated in the orientationChange field for that move
 			currentPosition.orientation = robot.currentPosition.orientation + app_settings.relativeOrientation[relativeOrientation.index].orientationChange;
 			currentPosition.orientation = adjustToValidOrientation(robot.currentPosition.orientation);
@@ -138,7 +137,7 @@ var robot_abilities = (function(){
 	const reportFunction = function(currentPosition){
 
 		var robotPlaced = validate.robotIsPlaced();
-		if (!robotPlaced.onGrid){
+		if (!robotPlaced.valid){
 			robot.addCommandLogError(robotPlaced.message);
 			return currentPosition;
 		}

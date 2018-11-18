@@ -21,8 +21,8 @@
 	<!-- scripts -->
 	<script async src="scripts/command_listener.js"></script>
 	<script async src="scripts/validate.js"></script>
-	<script async src="scripts/robot_command_test.js"></script>
-	<script async src="scripts/robot_abilities.js"></script>
+	<script async src="scripts/robotCommands_test.js"></script>
+	<script async src="scripts/robotCommands.js"></script>
 	<script src="scripts/app_settings.js"></script>
 	<script src="scripts/vueComponents.js"></script>
 	<script src="scripts/robot.js"></script>
@@ -36,12 +36,14 @@
 			<h4>IOOF Code Challenge November 2018</h4>
 		</div>
 		<div class="row">
+			<!-- menu buttons -->
 			<div id="menu" class="col-2">
 				<div class="btn-group-vertical">
 					<menu-button v-bind:name="item.buttonName" v-bind:click="item.click" v-for="item in buttons"></menu-button>
 				</div>
 			</div>
 			<main class="col-6">
+				<!-- grid -->
 				<div id="grid">
 					<span v-for="y in rowOrder" >
 						<grid-cell 
@@ -52,13 +54,14 @@
 					</span>
 				</div>
 				<!-- command input -->
-				<div class="input-group mb-3" style="padding-top: 20px;">
+				<div class="input-group input-group-lg mb-3" style="padding-top: 20px;">
 					<div class="input-group-prepend">
-						<span class="input-group-text">Robot:</span>
+						<span class="input-group-text">Robot Command:</span>
 					</div>
 					<input id = "commandInput" type="text" class="form-control" placeholder="eg Place 0,0,North">
 				</div>
 			</main>
+				<!-- command history -->
 			<div id="commandHistory"class="col-4">
 				<ul class="list-group">
 					<li v-for="item in command_history" class="list-group-item">
@@ -68,7 +71,8 @@
 			</div>
 		</div>
 	</div>
-	<!-- Instructions modal -->
+
+	<!-- help display -->
 	<div class="modal fade" id="commandsModal" role="dialog">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">

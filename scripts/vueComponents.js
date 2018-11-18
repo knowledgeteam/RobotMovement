@@ -27,13 +27,13 @@ Vue.component('robot', {
 		}
 	},
 	template:`<img id="robot" 
-				src="images/robot.png" 
+				src="styles/images/robot.png" 
 				v-bind:style="robotStyle">`
 });
 
 Vue.component('menu-button', {
 	props: ['name','click'],
-	template: `<input class="btn btn-primary"
+	template: `<input class="btn btn-secondary"
 					type="button"
 					v-bind:value=name
 					v-bind:onclick=click>`

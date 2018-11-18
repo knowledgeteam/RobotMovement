@@ -9,14 +9,14 @@
 // displayed in a table on the console.
 // ================================================================================
 "use strict"
-var test = (function(){
+var robotCommands_test = (function(){
 
 	const run = function(){
 
 		var result;
 		var failedTests;
 
-		// ensure we are at an expected state by resetting everything
+		// ensure we know the state of the robot
 		robot.invokeCommand("reset");
 
 		// run all tests
@@ -38,7 +38,6 @@ var test = (function(){
 
 		robot.addCommandLog(`${tests.length} tests run. ${failedTests.length} failed. See console (F12) for details`,null);
 		
-
 		//display results
 		console.table(tests);
 
