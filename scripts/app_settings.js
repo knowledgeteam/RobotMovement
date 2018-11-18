@@ -1,7 +1,15 @@
-"use strict"
+// ================================================================================
+// Author: David Wilson
+// Date: November: 2018
+// Project: IOOF Code Challenge
+// --------------------------------------------------------------------------------
+// app_settings.js | Purpose:
+// configurable settings for the project
+// ================================================================================
 var app_settings = (function(){
+	"use strict";
 
-	const gridSize = 5;		// number of cells in each row/col of the grid
+	const gridSize = 5;		// number of cells in each row/col of the grid (some display issues when >10)
 	const logLength = 10;	// Number of entries to display in the command history
 
 	const menuButtons = [{
@@ -43,7 +51,7 @@ var app_settings = (function(){
 	];
 
 
-	var allowDiagonals = true; // added to show how the behaviour can be changed
+	var allowDiagonals = false; // added to show how the behaviour can be changed
 
 	if (allowDiagonals){
 

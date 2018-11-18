@@ -62,7 +62,7 @@
 				</div>
 			</main>
 				<!-- command history -->
-			<div id="commandHistory"class="col-4">
+			<div id="commandHistory" class="col-4">
 				<ul class="list-group">
 					<li v-for="item in command_history" class="list-group-item">
 						{{ item.command }}<span class="commandErrorMessage"> {{ item.message }} </span>
@@ -117,10 +117,6 @@
 								<th>Reset</th>
 								<td class="text-nowrap">Reset</td>
 								<td>Remove the robot from the grid.</td>
-							</tr><tr>
-								<th>Test</th>
-								<td class="text-nowrap">Test</td>
-								<td>Run the tests described in the tests.js file and report on the results.</td>
 							</tr>
 						</tbody>
 					</table>

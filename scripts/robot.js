@@ -4,14 +4,10 @@
 // Project: IOOF Code Challenge
 // --------------------------------------------------------------------------------
 // robot.js | Purpose:
-// Define the robot and all functions related to its orientation and movement.
-// The public functions defined here will be called from either the command input
-// on the GUI or from the console.
-	//receiver
+// Stores robot current status info, Receives commands and executes them.
 // ================================================================================
-"use strict"
-
 var robot = (function(){
+	"use strict";
 
 	var currentPosition = {
 		x_position : null,
@@ -23,38 +19,47 @@ var robot = (function(){
 	var commandLog = [];
 
 	const executeCommand = function(command){
-		robot.currentPosition = command.execute(currentPosition, command.parameters);
+
+		var executionResult = command.execute(currentPosition, command.parameters);
+		robot.currentPosition = executionResult.currentPosition;
+		return executionResult;
 	};
 
-	var addCommandLog = function(command,message){
-		var entry = {	"command":command,
-						"message":message};
+	const addCommandLog = function(command,message){
+		var entry = {
+			"command":command,
+			"message":message
+		};
 		commandLog.push(entry);
-		// only keep most recent commands
-		if (commandLog.length>=app_settings.logLength){commandLog.shift();}
+		if (commandLog.length>=app_settings.logLength){commandLog.shift();}	// only keep most recent commands
 	};
 
-	var addCommandLogError = function(message){
+	const addCommandLogError = function(message){
 		commandLog[commandLog.length-1].message = message; // add message to most recent entry
-	}
+	};
 
 	const invokeCommand = function(rawUserCommand){
 
 		var success = true;
-		var errorMessage;
-		var commandResult;
-		var parsedUserCommand = validate.userInput(rawUserCommand);
+		var validatedUserCommand = validate.userCommand(rawUserCommand);
+		var executedUserCommand;
 
 		addCommandLog(rawUserCommand,null);
 
-		if (parsedUserCommand.valid){
+		if (validatedUserCommand.valid){
 			// Assume there are multiple parameters
-			executeCommand(robotCommands[parsedUserCommand.command].apply(null,parsedUserCommand.parameters));
+			executedUserCommand = executeCommand(robotCommands[validatedUserCommand.command].apply(null,validatedUserCommand.parameters));
+
+			if (!executedUserCommand.executionSuccess){
+				console.warn(`Execution error: ${executedUserCommand.message}`);
+				robot.addCommandLogError(executedUserCommand.message);
+				success = false;
+			}
 
 		} else {
-			// command validation failed
-			console.warn(`Validation error: ${parsedUserCommand.message}`);
-			robot.addCommandLogError(parsedUserCommand.message);
+			// invalid command
+			console.warn(`Validation error: ${validatedUserCommand.message}`);
+			robot.addCommandLogError(validatedUserCommand.message);
 			success = false;
 		}
 
@@ -65,7 +70,6 @@ var robot = (function(){
 		currentPosition:currentPosition,
 		commandLog:commandLog,
 		addCommandLog:addCommandLog,
-		addCommandLogError:addCommandLogError,
-		currentPosition:currentPosition
+		addCommandLogError:addCommandLogError
 	};
 }());

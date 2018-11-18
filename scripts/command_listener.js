@@ -6,9 +6,9 @@
 // command_listener.js | Purpose:
 // Send entered user commands to be interpreted.
 // ================================================================================
-"use strict"
-jQuery(document).ready(function(){
 
+jQuery(document).ready(function(){
+	"use strict";
 	var commandSelector = jQuery("#commandInput");
 
 	// Set focus on the command input
@@ -17,7 +17,7 @@ jQuery(document).ready(function(){
 	// listen for commands (invoke on 'enter' keyup)
 	commandSelector.on('keyup', function (e) {
 		if (e.keyCode == 13) {
-			robot.invokeCommand(commandSelector.val())
+			robot.invokeCommand(commandSelector.val());
 
 			commandSelector.val("");
 		}

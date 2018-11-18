@@ -3,15 +3,12 @@
 // Date: November: 2018
 // Project: IOOF Code Challenge
 // --------------------------------------------------------------------------------
-// robot_abilities.js | Purpose:
-// Define the robot and all functions related to its orientation and movement.
-// The public functions defined here will be called from either the command input
-// on the GUI or from the console.
+// robotCommands.js | Purpose:
+// Define all the actions the robot can make.
 // ================================================================================
-"use strict"
-
 var robotCommands = (function(){
-
+	"use strict";
+	
 	const command = function(execute,parameters){
 		this.execute = execute;
 		this.parameters = parameters;
@@ -38,11 +35,11 @@ var robotCommands = (function(){
 	};
 
 	const report = function(){
-		return new command(reportFunction,{});
+		return new command(reportFunction);
 	};
 
 	const reset = function(){
-		return new command(resetFunction,{});
+		return new command(resetFunction);
 	};
 
 	const placeFunction = function(currentPosition,moveParameters){
@@ -51,12 +48,18 @@ var robotCommands = (function(){
 		var newDirection = validate.orientationType(moveParameters.direction,"orientations");
 
 		if (!newCoordinates.valid){
-			robot.addCommandLogError(newCoordinates.message);
-			return currentPosition;
+			return {
+				currentPosition: currentPosition,
+				executionSuccess: false,
+				message: newCoordinates.message
+			};
 		}
 		if (!newDirection.valid){
-			robot.addCommandLogError(newDirection.message);
-			return currentPosition;
+			return {
+				currentPosition: currentPosition,
+				executionSuccess: false,
+				message: newDirection.message
+			};
 		}
 
 		currentPosition.x_position = parseInt(moveParameters.new_x_position);
@@ -64,7 +67,12 @@ var robotCommands = (function(){
 		currentPosition.orientation = newDirection.index;
 		currentPosition.isPlaced = true;
 
-		return currentPosition;
+		return {
+			currentPosition: currentPosition,
+			executionSuccess: true,
+			message: null
+		};
+
 	};
 
 	const moveFunction = function(currentPosition,moveParameters){
@@ -76,12 +84,18 @@ var robotCommands = (function(){
 		var moveTypeIndex = validate.orientationType(moveParameters.moveType,"movementRelativeToOrientation");
 
 		if (!robotPlaced.valid){
-			robot.addCommandLogError(robotPlaced.message);
-			return currentPosition;
+			return {
+				currentPosition: currentPosition,
+				executionSuccess: false,
+				message: robotPlaced.message
+			};
 		}
 		if (!moveTypeIndex.valid){
-			robot.addCommandLogError(moveTypeIndex.message);
-			return currentPosition;
+			return {
+				currentPosition: currentPosition,
+				executionSuccess: false,
+				message: moveTypeIndex.message
+			};
 		}
 
 		//relative movement is the direction of travel - not neccessarily the direction the robot is facing
@@ -93,24 +107,33 @@ var robotCommands = (function(){
 
 		newCoordinates = validate.coordinates(new_x_position,new_y_position);
 
-		if (newCoordinates.valid){
-				currentPosition.x_position = new_x_position;
-				currentPosition.y_position = new_y_position;
-
-		} else {
-			robot.addCommandLogError(newCoordinates.message);
-			return currentPosition;
+		if (!newCoordinates.valid){
+			return {
+				currentPosition: currentPosition,
+				executionSuccess: false,
+				message: newCoordinates.message
+			};
 		}
+		
+		currentPosition.x_position = new_x_position;
+		currentPosition.y_position = new_y_position;
 
-		return currentPosition;
+		return {
+			currentPosition: currentPosition,
+			executionSuccess: true,
+			message: null
+		};
 	};
 
 	const turnFunction = function(currentPosition,turnParameters){
 
 		var robotPlaced = validate.robotIsPlaced();
 		if (!robotPlaced.valid){
-			robot.addCommandLogError(robotPlaced.message);
-			return currentPosition;
+			return {
+				currentPosition: currentPosition,
+				executionSuccess: false,
+				message: robotPlaced.message
+			};
 		}
 
 		var relativeOrientation = validate.orientationType(turnParameters.turnName,"relativeOrientation");
@@ -120,7 +143,12 @@ var robotCommands = (function(){
 			currentPosition.orientation = robot.currentPosition.orientation + app_settings.relativeOrientation[relativeOrientation.index].orientationChange;
 			currentPosition.orientation = adjustToValidOrientation(robot.currentPosition.orientation);
 		}
-		return currentPosition;
+		return {
+			currentPosition: currentPosition,
+			executionSuccess: true,
+			message: null
+		};
+
 	};
 
 	const adjustToValidOrientation = function(orientationIndex){
@@ -136,22 +164,30 @@ var robotCommands = (function(){
 
 	const reportFunction = function(currentPosition){
 
-		var robotPlaced = validate.robotIsPlaced();
-		if (!robotPlaced.valid){
-			robot.addCommandLogError(robotPlaced.message);
-			return currentPosition;
+		if (!robot.isPlaced){
+			robot.addCommandLog("Report: Robot not on grid.",null);
 		}
 		robot.addCommandLog(`Report: Position: (${currentPosition.x_position},${currentPosition.y_position}) facing ${app_settings.orientations[currentPosition.orientation].name}`,null);
-
-		return currentPosition;
+		
+		return {
+			currentPosition: currentPosition,
+			executionSuccess: true,
+			message: null
+		};
 	};
 
 	const resetFunction = function(currentPosition){
+		
 		currentPosition.x_position = null;
 		currentPosition.y_position = null;
 		currentPosition.orientation = null;
 		currentPosition.isPlaced = false;
-		return currentPosition;
+
+		return {
+			currentPosition: currentPosition,
+			executionSuccess: true,
+			message: null
+		};
 	};
 
 	return {
