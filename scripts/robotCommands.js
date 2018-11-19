@@ -4,7 +4,7 @@
 // Project: IOOF Code Challenge
 // --------------------------------------------------------------------------------
 // robotCommands.js | Purpose:
-// Define all the actions the robot can make.
+// Define the actions the robot can make.
 // ================================================================================
 var robotCommands = (function(){
 	"use strict";
@@ -16,30 +16,29 @@ var robotCommands = (function(){
 
 	const place = function(new_x_position,new_y_position,direction){
 		var placeParameters = {
-			"new_x_position" : new_x_position,
-			"new_y_position" : new_y_position,
-			"direction" : direction};
+			"new_x_position": new_x_position,
+			"new_y_position": new_y_position,
+			"direction": direction};
 		return new command(placeFunction,placeParameters);
 	};
 
 	const move = function(moveType,moveDistance){
 		var moveParameters = {
-			"moveType" : moveType,
-			"moveDistance" : moveDistance};
+			"moveType": moveType,
+			"moveDistance": moveDistance};
 		return new command(moveFunction,moveParameters);
 	};
 	
-	// note that left, right and uturn all call turn
 	const left = function(turnName){
-		var turnParameters = {"turnName" : turnName};
+		var turnParameters = {"turnName": turnName};
 		return new command(turnFunction,turnParameters);
 	};
 	const right = function(turnName){
-		var turnParameters = {"turnName" : turnName};
+		var turnParameters = {"turnName": turnName};
 		return new command(turnFunction,turnParameters);
 	};
 	const uturn = function(turnName){
-		var turnParameters = {"turnName" : turnName};
+		var turnParameters = {"turnName": turnName};
 		return new command(turnFunction,turnParameters);
 	};
 
@@ -157,7 +156,6 @@ var robotCommands = (function(){
 			executionSuccess: true,
 			message: null
 		};
-
 	};
 
 	const adjustToValidOrientation = function(orientationIndex){
@@ -175,9 +173,9 @@ var robotCommands = (function(){
 
 		if (!robot.isPlaced){
 			robot.addCommandLog("Report: Robot not on grid.",null);
+		} else {
+			robot.addCommandLog(`Report: Position: (${currentPosition.x_position},${currentPosition.y_position}) facing ${app_settings.orientations[currentPosition.orientation].name}`,null);
 		}
-		robot.addCommandLog(`Report: Position: (${currentPosition.x_position},${currentPosition.y_position}) facing ${app_settings.orientations[currentPosition.orientation].name}`,null);
-		
 		return {
 			currentPosition: currentPosition,
 			executionSuccess: true,
@@ -198,11 +196,9 @@ var robotCommands = (function(){
 			message: null
 		};
 	};
-
 	return {
 		place:place,
 		move:move,
-		// turn:turn,
 		left:left,
 		right:right,
 		uturn:uturn,

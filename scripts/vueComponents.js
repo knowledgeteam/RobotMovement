@@ -55,8 +55,4 @@
 						v-bind:value=name
 						v-bind:onclick=click>`
 	});
-
-
 }());
-
-

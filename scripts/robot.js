@@ -10,10 +10,10 @@ var robot = (function(){
 	"use strict";
 
 	var currentPosition = {
-		x_position : null,
-		y_position : null,
-		orientation : null,
-		isPlaced : false
+		x_position: null,
+		y_position: null,
+		orientation: null,
+		isPlaced: false
 	};
 
 	var commandLog = [];
@@ -27,11 +27,11 @@ var robot = (function(){
 
 	const addCommandLog = function(command,message){
 		var entry = {
-			"command":command,
-			"message":message
+			"command": command,
+			"message": message
 		};
 		commandLog.push(entry);
-		if (commandLog.length>=app_settings.logLength){commandLog.shift();}	// only keep most recent commands
+		if (commandLog.length>=app_settings.logLength){commandLog.shift();} // only keep most recent commands
 	};
 
 	const addCommandLogError = function(message){
@@ -39,6 +39,7 @@ var robot = (function(){
 	};
 
 	const invokeCommand = function(rawUserCommand){
+		console.group(`Invoke command: ${rawUserCommand}`);
 
 		var success = true;
 		var validatedUserCommand = validate.userCommand(rawUserCommand);
@@ -57,12 +58,11 @@ var robot = (function(){
 			}
 
 		} else {
-			// invalid command
 			console.warn(`Validation error: ${validatedUserCommand.message}`);
 			robot.addCommandLogError(validatedUserCommand.message);
 			success = false;
 		}
-
+		console.groupEnd();
  		return success;
 	};
 	return {

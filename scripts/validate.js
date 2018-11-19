@@ -121,7 +121,7 @@ var validate = (function(){
 			};
 		}
 
-		if (typeof requiredParameterCount == 'undefined') {
+		if (typeof requiredParameterCount == "undefined") {
 			requiredParameterCount = robotCommands[parsedCommand].length;
 		}
 

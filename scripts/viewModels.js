@@ -13,7 +13,7 @@
 		el: '#grid',
 		data: {
 			gridSize: app_settings.gridSize,
-			robotPosition : robot.currentPosition
+			robotPosition: robot.currentPosition
 		},
 		computed: { // define order so that origin will be in southwest corner
 			columnOrder: function(){
@@ -37,9 +37,7 @@
 	var commandHistoryViewModel = new Vue({
 		el: '#commandHistory',
 		data: {
-			command_history : robot.commandLog
+			command_history: robot.commandLog
 		}
 	});
 }());
-
-
