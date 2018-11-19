@@ -108,6 +108,7 @@ var validate = (function(){
 
 			case "move": // allow move with no parameters - default to move forwards 1 space
 				if (parsedParameters.length == 0){parsedParameters = ["forwards",1];}
+				requiredParameterCount = 0;
 				break;
 		}
 
