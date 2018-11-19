@@ -90,28 +90,20 @@ var validate = (function(){
 
 		suppliedParameterCount = parsedParameters.length;
 
-		switch (parsedCommand) {
-			case "left": // Turn commands need to have the turnName as a parameter since they call function 'turn'
-				if (parsedParameters.length == 0){ parsedParameters = ["left"];	}
-				requiredParameterCount = 0;
-				break;
+		// turn commands need to be mapped to the generic turn function eg left() --> turn(left)
+		if (validate.orientationType(parsedCommand,"relativeOrientation").valid){
 
-			case "right":
-				if (parsedParameters.length == 0){parsedParameters = ["right"];}
-				requiredParameterCount = 0;
-				break;
+			if (parsedParameters.length == 0){ // if additional parameters are supplied let it fail tests 
+				parsedParameters = [parsedCommand];
+			}
+			parsedCommand = "turn";
+			requiredParameterCount = 0;
+		}
 
-			case "uturn":
-				if (parsedParameters.length == 0){parsedParameters = ["uturn"];}
-				requiredParameterCount = 0;
-				break;
-
-			case "move": // allow move with no parameters - default to move forwards 1 space
-				if (parsedParameters.length == 0){
-					parsedParameters = ["forwards",1];
-					requiredParameterCount = 0;
-				}
-				break;
+		// add parameters for default move command
+		if (parsedCommand=="move" && parsedParameters.length == 0){
+			parsedParameters = ["forwards",1];
+			requiredParameterCount = 0
 		}
 
 		//check if command exists

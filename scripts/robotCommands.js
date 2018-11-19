@@ -28,16 +28,8 @@ var robotCommands = (function(){
 			"moveDistance": moveDistance};
 		return new command(moveFunction,moveParameters);
 	};
-	
-	const left = function(turnName){
-		var turnParameters = {"turnName": turnName};
-		return new command(turnFunction,turnParameters);
-	};
-	const right = function(turnName){
-		var turnParameters = {"turnName": turnName};
-		return new command(turnFunction,turnParameters);
-	};
-	const uturn = function(turnName){
+
+	const turn = function(turnName){
 		var turnParameters = {"turnName": turnName};
 		return new command(turnFunction,turnParameters);
 	};
@@ -171,7 +163,7 @@ var robotCommands = (function(){
 
 	const reportFunction = function(currentPosition){
 
-		if (!robot.isPlaced){
+		if (!robot.currentPosition.isPlaced){
 			robot.addCommandLog("Report: Robot not on grid.",null);
 		} else {
 			robot.addCommandLog(`Report: Position: (${currentPosition.x_position},${currentPosition.y_position}) facing ${app_settings.orientations[currentPosition.orientation].name}`,null);
@@ -199,9 +191,7 @@ var robotCommands = (function(){
 	return {
 		place:place,
 		move:move,
-		left:left,
-		right:right,
-		uturn:uturn,
+		turn:turn,
 		report:report,
 		reset:reset,
 	};
