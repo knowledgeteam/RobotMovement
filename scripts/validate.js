@@ -6,7 +6,6 @@
 // validate.js | Purpose:
 // Functions to validate user commands
 // ================================================================================
-
 var validate = (function(){
 	"use strict";
 
@@ -62,61 +61,58 @@ var validate = (function(){
 
 	const singleCoordinate = function(n){
 
-		if (isNaN(parseInt(n)) || n>=app_settings.gridSize || n<0) {
+		if (isNaN(parseInt(n)) || n >= app_settings.gridSize || n < 0) {
 			return { valid: false};
 		} else {
 			return { valid: true };
 		}
 	};
 
-	// const userInput = function(input){
 	const userCommand = function(rawUserString){
 
-		var parsedUserString;
-		var parsedCommandArray;
+		var cleanUserString;
 		var parsedCommand;
 		var parsedParameters;
 
-		parsedUserString = rawUserString.toLowerCase();
-		parsedUserString = parsedUserString.trim();
+		var suppliedParameterCount;
+		var requiredParameterCount;
 
-		parsedCommandArray = parsedUserString.split(" ");
-		parsedCommand = parsedCommandArray[0];
+		cleanUserString = rawUserString.toLowerCase().trim();
+
+		parsedCommand = cleanUserString.split(" ")[0];
 
 		// check if any parameters were supplied
-		if (parsedUserString.indexOf(" ") == -1){
+		if (cleanUserString.indexOf(" ") == -1){
 			parsedParameters = [];
 		} else {
-			parsedParameters = parsedCommandArray.slice(1).join("").split(',');
+			parsedParameters = cleanUserString.split(" ").slice(1).join("").split(',');
 		}
 
+		suppliedParameterCount = parsedParameters.length;
 
-		// check if the user is calling a function which should be redirected
-		// e.g. call to function 'left' should actually call function 'turn' with left as a parameter
 		switch (parsedCommand) {
-			case "left":
-				parsedCommand = "turn";
-				if (parsedParameters.length == 0){parsedParameters = ["left"];}
+			case "left": // Turn commands need to have the turnName as a parameter since they call function 'turn'
+				if (parsedParameters.length == 0){ parsedParameters = ["left"];	}
+				requiredParameterCount = 0;
 				break;
 
 			case "right":
-				parsedCommand = "turn";
 				if (parsedParameters.length == 0){parsedParameters = ["right"];}
+				requiredParameterCount = 0;
 				break;
 
 			case "uturn":
-				parsedCommand = "turn";
 				if (parsedParameters.length == 0){parsedParameters = ["uturn"];}
+				requiredParameterCount = 0;
 				break;
 
-			case "move": 	// allow move with no parameters - default to move forwards 1 space
+			case "move": // allow move with no parameters - default to move forwards 1 space
 				if (parsedParameters.length == 0){parsedParameters = ["forwards",1];}
 				break;
 		}
 
 		//check if command exists
 		if (typeof robotCommands[parsedCommand] !== "function"){
-
 			return {
 				valid: false,
 				command: null,
@@ -125,19 +121,22 @@ var validate = (function(){
 			};
 		}
 
-		// check if the correct number of parameters are supplied
-		if (robotCommands[parsedCommand].length !== parsedParameters.length){
+		if (typeof requiredParameterCount == 'undefined') {
+			requiredParameterCount = robotCommands[parsedCommand].length;
+		}
 
+		// check if the correct number of parameters are supplied
+		if (suppliedParameterCount !== requiredParameterCount){
 			return {
 				valid: false,
 				command: null,
 				parameters: null,
-				message: `Robot expected ${robotCommands[parsedCommand].length} parameters for the ${parsedCommand} command.`
+				message: `Robot expected ${requiredParameterCount} parameters for the ${parsedCommand} command.`
 			};
 		}
-
+		
 		// valid function call. Parameters will be validated when function is executed.
-		return {
+		return { 
 			valid: true,
 			command: parsedCommand,
 			parameters: parsedParameters,

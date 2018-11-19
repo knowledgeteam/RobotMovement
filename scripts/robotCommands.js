@@ -28,8 +28,17 @@ var robotCommands = (function(){
 			"moveDistance" : moveDistance};
 		return new command(moveFunction,moveParameters);
 	};
-
-	const turn = function(turnName){
+	
+	// note that left, right and uturn all call turn
+	const left = function(turnName){
+		var turnParameters = {"turnName" : turnName};
+		return new command(turnFunction,turnParameters);
+	};
+	const right = function(turnName){
+		var turnParameters = {"turnName" : turnName};
+		return new command(turnFunction,turnParameters);
+	};
+	const uturn = function(turnName){
 		var turnParameters = {"turnName" : turnName};
 		return new command(turnFunction,turnParameters);
 	};
@@ -193,7 +202,10 @@ var robotCommands = (function(){
 	return {
 		place:place,
 		move:move,
-		turn:turn,
+		// turn:turn,
+		left:left,
+		right:right,
+		uturn:uturn,
 		report:report,
 		reset:reset,
 	};
